@@ -4,6 +4,7 @@
   "description": "Hot Potato Party game in NodeJS (Websockets) & HTML Canvas, Built for mobile.",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js && node socket-server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/Cplantijn/hot-potato/issues"
   },
-  "homepage": "https://github.com/Cplantijn/hot-potato#readme"
+  "homepage": "https://github.com/Cplantijn/hot-potato#readme",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "fastify": "^1.14.1",
+    "fastify-static": "^1.1.0",
+    "fastify-websocket": "^0.3.0"
+  }
 }
