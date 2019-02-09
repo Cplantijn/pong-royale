@@ -1,0 +1,28 @@
+@import 'settings';
+
+body {
+  margin: 0;
+}
+
+.game-loading-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .game-icon {
+    max-width: 200px;
+    fill: $red;
+  }
+}
+
+#gameLobby {
+  align-items: center;
+  justify-content: center;
+}
+
+#lobbyStatus {
+  text-align: center;
+}
