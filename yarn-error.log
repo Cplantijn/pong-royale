@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/chris/.nvm/versions/node/v10.15.0/bin/node /usr/local/Cellar/yarn/1.13.0/libexec/bin/yarn.js start
+  /Users/chris/.nvm/versions/node/v10.15.0/bin/node /usr/local/Cellar/yarn/1.13.0/libexec/bin/yarn.js add fastify-ws
 
 PATH: 
   /Users/chris/.nvm/versions/node/v10.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/chris/.nvm/versions/node/v10.15.0/bin
@@ -14,8 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/chris/node-projects/hot-potato/package.json: Unexpected token 
-   in JSON at position 237
+  SyntaxError: /Users/chris/node-projects/hot-potato/package.json: Unexpected token } in JSON at position 754
       at JSON.parse (<anonymous>)
       at /usr/local/Cellar/yarn/1.13.0/libexec/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -29,7 +28,7 @@ npm manifest:
     "description": "Hot Potato Party game in NodeJS (Websockets) & HTML Canvas, Built for mobile.",
     "main": "index.js",
     "scripts": {
-      "start": "node server.js && node socket-server.js,
+      "start": "concurrently \"node server.js\" \"node socket-server.js\"",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -46,7 +45,6 @@ npm manifest:
       "concurrently": "^4.1.0",
       "fastify": "^1.14.1",
       "fastify-static": "^1.1.0",
-      "fastify-websocket": "^0.3.0"
     }
   }
 

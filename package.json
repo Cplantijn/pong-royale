@@ -1,26 +1,32 @@
 {
-  "name": "hot-potato",
+  "name": "multi-pong",
   "version": "1.0.0",
-  "description": "Hot Potato Party game in NodeJS (Websockets) & HTML Canvas, Built for mobile.",
+  "description": "Ping Pong party game in NodeJS (Websockets) & HTML Canvas, Built for mobile.",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js && node socket-server.js",
+    "start": "concurrently \"nodemon server.js\" \"npm run watch-styles\"",
+    "build-styles": "node-sass --include-path scss styles/main.scss   public/css/styles.css",
+    "watch-styles": "nodemon -e scss -x \"npm run build-styles\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Cplantijn/hot-potato.git"
+    "url": "git+https://github.com/Cplantijn/multi-pong.git"
   },
   "author": "Christopher Plantijn <cplantijn90@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Cplantijn/hot-potato/issues"
+    "url": "https://github.com/Cplantijn/multi-pong/issues"
   },
-  "homepage": "https://github.com/Cplantijn/hot-potato#readme",
+  "homepage": "https://github.com/Cplantijn/multi-pong#readme",
   "dependencies": {
     "concurrently": "^4.1.0",
     "fastify": "^1.14.1",
     "fastify-static": "^1.1.0",
-    "fastify-websocket": "^0.3.0"
+    "fastify-ws": "^1.0.0"
+  },
+  "devDependencies": {
+    "node-sass": "^4.11.0",
+    "nodemon": "^1.18.10"
   }
 }
