@@ -23,7 +23,8 @@
     "concurrently": "^4.1.0",
     "fastify": "^1.14.1",
     "fastify-static": "^1.1.0",
-    "fastify-ws": "^1.0.0"
+    "fastify-ws": "^1.0.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "node-sass": "^4.11.0",

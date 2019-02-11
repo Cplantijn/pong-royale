@@ -1,0 +1,75 @@
+
+@mixin spectPlayer($color) {
+  color: white;
+  background-color: $color;
+  border: 2px solid darken($color, 5%);
+}
+
+.spectating-player-list {
+  display: flex;
+  justify-content: center;
+  
+  .spectating-player {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: .5rem 1rem;
+    margin: .5rem .25rem;
+    font-size: 19px;
+    letter-spacing: 1px;
+    height: 35px;
+    width: 90px;
+    color: #3A3A3A;
+    background-color: #e6e6e6;
+    border: 2px dashed darken(#3A3A3A, 5%);
+
+    &:nth-child(1) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#A22D29);
+      }
+    }
+    &:nth-child(2) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#337201);
+      }
+    }
+    &:nth-child(3) {
+      .is-serving {
+        @include setPlayerReadyBlock(#04223A);
+      } 
+    }
+    &:nth-child(4) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#009DDC);
+      }
+    }
+    &:nth-child(5) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#FF0054);
+      }
+    }
+    &:nth-child(6) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#390099);
+      }
+    }
+    &:nth-child(7) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#F18805);
+      }
+      
+    }
+    &:nth-child(8) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#2F1000);
+      }
+      
+    }
+    &:nth-child(9) {
+      &.is-serving {
+        @include setPlayerReadyBlock(#11270B);
+      }
+    }
+  }
+}

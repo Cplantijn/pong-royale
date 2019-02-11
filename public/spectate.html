@@ -1,18 +1,21 @@
 <html>
   <head>
-    <title>Pong Royale</title>
+    <title>Pong Royale Spectator Mode</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/public/css/styles.css">
   </head>
+
   <body>
     <div id="header" class="lobby-header-container">
       <img src="/public/assets/multi_pong_logo.svg" alt="MultiPong Logo" />
-      <span>Pong Royale</span>
+      <span>Spectator Mode</span>
     </div>
     <div id="gameContainer"></div>
-    <div id="messageContainer"></div>
-      <script src="/public/js/confetti.js"></script>
-    <script src="/public/js/game.js"></script>
+    <div id="canvas-container" style="margin-top: 1rem;text-align: center">
+      <canvas id="gameCanvas" width="360" height="640"></canvas>
+    </div>
+    <script src="/public/js/confetti.js"></script>
+    <script src="/public/js/spectate.js"></script>
   </body>
 </html>

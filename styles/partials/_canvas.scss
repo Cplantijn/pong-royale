@@ -1,0 +1,29 @@
+.game-canvas-container {
+  position: relative;
+  margin-right: auto;
+  margin-left: auto;
+  #playerStatus {
+    position: absolute;
+    top: 1rem;
+    left: .5rem;
+    width: calc(100% - 1rem);
+    display: flex;
+    justify-content: space-between;
+
+    img {
+      height: 24px;
+      margin-right: .25rem;
+      &.swing-indicator {
+        margin-right: .5rem;
+        height: 48px;
+        &.swung {
+          opacity: .25;
+        }
+      }
+    }
+  }
+
+  #lastStatusHeart {
+    animation-duration: 450;
+  }
+}

@@ -1,0 +1,103 @@
+@mixin setPlayerReadyBlock($color) {
+  color: white;
+  background-color: $color;
+  border: 2px solid darken($color, 5%);
+}
+
+.lobby-header-container {
+  padding: .5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $sky;
+
+  img {
+    width: 60px;
+    margin-right: 40px;
+  }
+
+  span {
+    border-left: 4px solid white;
+    font-size: 32px;
+    padding-left: 20px;
+    color: white;
+    letter-spacing: 1px;
+  }
+}
+
+.lobby-players {
+  display: flex;
+  padding: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .status-container {
+    padding-left: .5rem;
+    img {
+      height: 18px;
+      margin-right: 2px;
+    }
+  }
+}
+
+.lobby-player {
+  color: #3A3A3A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: .5rem 1rem;
+  background-color: #e6e6e6;
+  border: 2px dashed darken(#3A3A3A, 5%);
+  margin: .5rem .25rem;
+  font-size: 24px;
+  letter-spacing: 1px;
+  height: 50px;
+  width: 120px;
+
+  &:nth-child(1) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#A22D29);
+    }
+  }
+  &:nth-child(2) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#337201);
+    }
+  }
+  &:nth-child(3) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#04223A);
+    }
+  }
+  &:nth-child(4) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#009DDC);
+    }
+  }
+  &:nth-child(5) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#FF0054);
+    }
+  }
+  &:nth-child(6) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#390099);
+    }
+  }
+  &:nth-child(7) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#F18805);
+    }
+  }
+  &:nth-child(8) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#2F1000);
+    }
+  }
+  &:nth-child(9) {
+    &.is-ready {
+      @include setPlayerReadyBlock(#11270B);
+    }
+  }
+}
