@@ -2,10 +2,8 @@ const host = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(host);
 ws.onmessage = msg => handleMessage(JSON.parse(msg.data));
 
-const CANVAS_EASY_ZONE_CUTOFF_RATIO = .5;
-const CANVAS_HARD_ZONE_CUTOFF_RATIO = .85;
-const CANVAS_MOTION_BLUR_SAMPLES = 5;
 let gameState = {};
+let smashTimeout = null;
 
 function handleMessage(msg) {
   switch (msg.msgType) {
@@ -18,22 +16,17 @@ function handleMessage(msg) {
     case 'GAME_START':
       generateLobby(msg.playerList.map(p => ({...p, isReady: false })), 'Player Lobby', 'Game is about to start...');
       break;
+    case 'PLAYER_SMASHED':
+      playSmashed(msg.message);
+      break;
     case 'UPDATE_PLAYERLIST':
       generateLobby(msg.playerList);
       break;
     case 'BALL_SERVED_SPECTATOR':
-      gameState = {
-        ...msg.gameState,
-        ballVertPosition: 0,
-        hasSwung: false,
-        ballInMotion: true,
-        wasSmashed: false,
-        direction: 1
-      };
-      console.log({gameState})
+      gameState = msg.gameState;
+
       const players = msg.playerList.map(p => {
         p.isReady = false;
-
         if (p.id === msg.playerServed.id) {
           return {
             ...p,
@@ -44,13 +37,41 @@ function handleMessage(msg) {
       });
 
       generateLobby(players, '', `Ball Speed: ${msg.ballSpeed}`);
-      drawCanvas()
+    case 'PLAYER_WIN':
+      drawPlayerWinnerScreen(`${msg.player.name} wins!`);
+      break;
+    case 'VOLLEY_FAILED':
+      showMessage(msg.playerMessage);
+      break;
+    case 'PLAYER_ELIMINATED':
+      showMessage(msg.playerMessage);
+      break;
     default:
     // Boo hoo haa haa
   }
 }
 
+function playSmashed(msg) {
+  clearTimeout(smashTimeout);
+
+  const smashContainer = document.getElementById('smashContainer');
+  smashContainer.style.display = 'flex';
+  smashContainer.innerHTML = `
+    <h1 class="animated wobble text-center">🏓💯🔥🔥💯🏓</h1>
+    <h1 class="animated tada">${msg}</h1>
+    <h1 class="animated wobble text-center">🏓💯🔥🔥💯🏓</h1>
+  `;
+
+  smashTimeout = setTimeout(function() {
+    smashContainer.style.display = 'none';
+    smashContainer.innerHTML = '';
+  }, 2200);
+}
+
 function generateLobby(players, title, extraMsg) {
+  document.getElementById('header').style.display = 'flex';
+  document.body.style.backgroundColor = 'transparent';
+
   const gameContainer = document.getElementById('gameContainer');
   const titl = typeof title === 'string' ? title : 'Player Lobby';
 
@@ -90,56 +111,39 @@ function drawStatus(player) {
   return html;
 }
 
-function drawCanvas() {
-  const canvas = document.getElementById('gameCanvas');
-  const canvasCtx = canvas.getContext('2d');
-
-  if (!canvasCtx) return;
-
-  // Set up background
-  canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-  canvasCtx.fillStyle = '#337201';
-  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw Easy Hit Zone
-  canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-  canvasCtx.fillRect(0, canvas.height * CANVAS_EASY_ZONE_CUTOFF_RATIO, canvas.width, canvas.height * (CANVAS_HARD_ZONE_CUTOFF_RATIO - CANVAS_EASY_ZONE_CUTOFF_RATIO));
-
-  // Draw Hard Hit Zone
-  canvasCtx.fillStyle = '#ef8917';
-  canvasCtx.fillRect(0, canvas.height * CANVAS_HARD_ZONE_CUTOFF_RATIO, canvas.width, canvas.height - (canvas.height * CANVAS_HARD_ZONE_CUTOFF_RATIO));
-
-  // Smash Zone Text
-  canvasCtx.font = '24px Arial';
-  canvasCtx.textAlign = 'center';
-  canvasCtx.fillStyle = '#fff';
-  canvasCtx.fillText('💯🏓🔥 Smash Zone!! 💯🏓🔥', canvas.width / 2, canvas.height - (canvas.height * ((1 - CANVAS_HARD_ZONE_CUTOFF_RATIO) / 2) - 12));
-
-  // Draw Ball
-  if (gameState.ballInMotion) {
-    if (gameState.ballVelocity > 10) {
-      for (let i = 1; i < CANVAS_MOTION_BLUR_SAMPLES; i++) {
-        canvasCtx.beginPath();
-        canvasCtx.arc((canvas.width / 2), gameState.ballVertPosition - (i + (gameState.ballVelocity / 2)), 20, 0, Math.PI * 2);
-        canvasCtx.fillStyle = `rgba(255, 255, 255, ${i / 10})`;
-        canvasCtx.fill();
-        canvasCtx.closePath();
-      }
-    }
-
-    canvasCtx.beginPath();
-    canvasCtx.arc((canvas.width / 2), gameState.ballVertPosition, 20, 0, Math.PI * 2);
-    canvasCtx.fillStyle = "#fff";
-    canvasCtx.fill();
-    canvasCtx.closePath();
-    gameState.ballVertPosition += (gameState.ballVelocity * gameState.direction);
-
-    requestAnimationFrame(drawCanvas);
-  }
-}
-
 function getGameStatus() {
   sendMessage({ msgType: 'GET_SPECTATOR_STATUS' });
+}
+
+function drawPlayerWinnerScreen(msg) {
+  document.getElementById('header').style.display = 'none';
+  const gameContainer = document.getElementById('gameContainer');
+  gameContainer.classList.remove('flex-middle', 'flex-center', 'is-countdown', 'flex-one');
+  gameContainer.innerHTML = `
+    <div class="game-canvas-container">
+      <canvas id="gameCanvas" width="${window.innerWidth}" height="${window.innerHeight}">
+    </div>
+  `;
+
+  drawConfetti(msg);
+}
+
+// Notifications
+function showMessage(message) {
+  const messageContainer = document.getElementById('messageContainer');
+  if (!messageContainer) return;
+
+  messageContainer.innerHTML = `
+    <div class="message-content">
+      ${message}
+    </div>
+  `;
+
+  messageContainer.classList.add('open');
+
+  setTimeout(function () {
+    messageContainer.classList.remove('open');
+  }, 2800);
 }
 
 // WS Sender

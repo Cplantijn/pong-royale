@@ -111,27 +111,36 @@ fastify.ready(err => {
         case 'VOLLEY_FAILED': {
           let scoringPlayer = 'The Server';
           const runningVolley = GameState.getVolleyTally();
+  
           if (runningVolley.length) {
             scoringPlayer = runningVolley[runningVolley.length - 1].name;
           }
 
           const speed = `~${(GameState.getBallVelocity() * 16).toFixed(2)} units per second`;
-          const newPlayer = GameState.removeLifeFromPlayer(socketId);
+          const updatedPlayer = GameState.removeLifeFromPlayer(socketId);
           const playersLeft = GameState.getPlayers().filter(p => p.isReady && p.lives > 0);
 
           let playerMessage;
 
-          if (newPlayer.lives > 0) {
-            sendMessageToClient(socketId, {
-              msgType: 'LIFE_LOST',
-              lives: newPlayer.lives
-            });
+          sendMessageToClient(socketId, {
+            msgType: 'LIFE_LOST',
+            lives: updatedPlayer.lives
+          });
+
+          if (updatedPlayer.lives > 0) {
             playerMessage = `<strong>${GameState.getPlayerById(socketId).name}</strong> was defeated by <strong>${scoringPlayer}</strong> with a ball clocked at <strong>${speed}</strong>.<br />Next Serve Coming Soon`;
-          } else {
-            GameState.setPlayerById(socketId, {
-              isReady: false
+
+            sendMessageToAll({
+              msgType: 'VOLLEY_FAILED',
+              playerMessage
+            }, [socketId]);
+
+            sendMessageToClient(socketId, {
+              msgType: 'VOLLEY_FAILED',
+              playerMessage: `<strong>${scoringPlayer}</strong> bested you with a ball clocked at <strong>${speed}</strong>.<br />Next Serve Coming Soon`
             });
 
+          } else {
             sendMessageToClient(socketId, {
               msgType: 'PLAYER_ELIMINATED',
               playerMessage: `You have been <div class="animated heartBeat"><span class="extra">ELIMINATED</span> by ${scoringPlayer}</div>`,
@@ -140,12 +149,14 @@ fastify.ready(err => {
 
             const playersRemain = `<strong>${playersLeft.length}</strong> players remain`;
             playerMessage = `<div class="animated heartBeat"><span class="extra">${GameState.getPlayerById(socketId).name} has been ELIMINATED</span></div> by <strong>${scoringPlayer}</strong> with a ball clocked at <strong>${speed}</strong>.<br />${playersRemain}<br/>Next Serve Coming Soon`;
+            
+            sendMessageToAll({
+              msgType: 'PLAYER_ELIMINATED',
+              playerMessage: `<strong>${GameState.getPlayerById(socketId).name}</strong> has been <div class="animated heartBeat"><span class="extra">ELIMINATED</span> by ${scoringPlayer}</div>`,
+              playerList: playersLeft,
+              allPlayers: GameState.getPlayers()
+            }, [socketId]);
           }
-
-          sendMessageToAll({
-            msgType: 'VOLLEY_FAILED',
-            playerMessage
-          }, [socketId]);
 
           if (playersLeft.length > 1) {
             setTimeout(function () {
@@ -191,7 +202,7 @@ fastify.ready(err => {
           break;
         }
         case 'VOLLEY_SUCCESS': {
-          GameState.increaseBallVelocity(msg.wasSmashed);
+          GameState.increaseBallVelocity(payload.wasSmashed);
           GameState.tallyVolley(socketId);
           const playerServed = GameState.serveBallToRandomPlayer(socketId);
 
@@ -209,6 +220,12 @@ fastify.ready(err => {
           })
           break;
         }
+        case 'PLAYER_SMASHED':
+          sendMessageToAll({
+            msgType: 'PLAYER_SMASHED',
+            message: `${GameState.getPlayerById(socketId).name} SMASHED THE BALL AT ${((GameState.getBallVelocity() * 2) * 16).toFixed(2)} UNITS/S!`
+          });
+          break;
         case 'GET_SPECTATOR_STATUS':
           if (!GameState.isGameActive()) {
             sendMessageToClient(socketId, {

@@ -1,5 +1,5 @@
-const STARTING_PLAYER_LIVES = 4;
-const STARTING_BALL_VELOCITY = 6;
+const STARTING_PLAYER_LIVES = 3;
+const STARTING_BALL_VELOCITY = 3;
 
 global.GameState = {
   players: [],
@@ -79,7 +79,7 @@ global.GameState = {
     return this.players.filter(p => p.isReady).every(p => p.isCanvasReady);
   },
   serveBallToRandomPlayer: function(excludeId) {
-    const participatingPlayers = this.players.filter(p => p.isReady && p.isCanvasReady);
+    const participatingPlayers = this.players.filter(p => p.isReady && p.isCanvasReady && p.lives > 0);
     const nextServeCandidates = excludeId ? participatingPlayers.filter(p => p.id !== excludeId) : participatingPlayers;
     return nextServeCandidates[Math.floor(Math.random() * nextServeCandidates.length)]
   },

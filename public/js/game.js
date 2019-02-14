@@ -50,12 +50,10 @@ function handleMessage(msg) {
       updatePlayerLives();
       break;
     case 'PLAYER_ELIMINATED':
-      document.getElementById('header').style.display = 'flex';
-      localPlayer.isReady = false;
       showMessage(msg.playerMessage);
       break;
     case 'PLAYER_WIN':
-      const message = msg.player === localPlayer.id ? 'You Win!!' : `${msg.player.name} wins!`;
+      const message = msg.player.id === localPlayer.id ? 'You Win!!' : `${msg.player.name} wins!`;
       drawPlayerWinnerScreen(message);
       break;
     case 'GO_TO_LOBBY':
@@ -198,9 +196,11 @@ function setPlayerStatus() {
 function handleCanvasTouchEvent() {
   if (!gameState.hasSwung) {
     if (gameState.ballVertPosition > canvas.height * CANVAS_EASY_ZONE_CUTOFF_RATIO) {
+      gameState.wasSmashed = false;
       if (gameState.ballVertPosition > canvas.height * CANVAS_HARD_ZONE_CUTOFF_RATIO) {
+        sendMessage({ msgType: 'PLAYER_SMASHED' });
         gameState.ballVelocity = gameState.ballVelocity * 2;
-        gameState.smashedBall = true;
+        gameState.wasSmashed = true;
         vibrate(100);
       } else {
         gameState.ballVelocity = gameState.ballVelocity * 1.2;

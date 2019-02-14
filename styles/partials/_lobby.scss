@@ -101,3 +101,35 @@
     }
   }
 }
+
+#smashContainer {
+  position: fixed;
+  flex-direction: column;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+  background: linear-gradient(180deg, #FFEE88, #DD1155);
+  background-size: 400% 400%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding-left: 200px;
+  padding-right: 200px;
+  color: #0A2472;
+  h1 {
+    text-align: center;
+    font-size: 120px;
+  }
+	animation: Gradient .1s ease infinite;
+}
+
+@keyframes Gradient {
+	0% {
+		background-position: 50% 0%;
+	}
+	100% {
+		background-position: 50% 100%;
+	}
+}
